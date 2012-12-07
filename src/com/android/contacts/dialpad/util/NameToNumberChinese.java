@@ -33,7 +33,7 @@ public class NameToNumberChinese extends NameToNumber {
         String t9 = null;
 
         String hzPinYin = HanziToPinyin.getInstance().getFirstPinYin(name).toLowerCase();
-        
+
         if (hzPinYin != null && !hzPinYin.isEmpty()) {
             t9 = convertToT9(hzPinYin);
             //Append the full ping yin at the end of the first ping yin
@@ -45,7 +45,7 @@ public class NameToNumberChinese extends NameToNumber {
             // Add English name search support
             t9 = convertToT9(name.toLowerCase());
         }
-        
+
         return t9;
 
     }

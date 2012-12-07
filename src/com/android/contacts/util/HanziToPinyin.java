@@ -1131,7 +1131,7 @@ public class HanziToPinyin {
 
     /**
      * Validate if our internal table has some wrong value.
-     * 
+     *
      * @return true when the table looks correct.
      */
     private static boolean doSelfValidation() {
@@ -1283,7 +1283,7 @@ public class HanziToPinyin {
         tokens.add(new Token(tokenType, str, str));
         sb.setLength(0);
     }
-    
+
     /**
      * Convert the input Chinese string into full Pinyin
      * @param source
@@ -1306,7 +1306,7 @@ public class HanziToPinyin {
         }
         return result.toString();
     }
-    
+
     /**
      * Convert the input Chinese string into Pinyin abbr.
      * @param source

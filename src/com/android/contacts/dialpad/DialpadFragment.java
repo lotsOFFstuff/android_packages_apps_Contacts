@@ -339,7 +339,9 @@ public class DialpadFragment extends Fragment
         int cellCount = dm.widthPixels / minCellSize;
         int fakeMenuItemWidth = dm.widthPixels / cellCount;
         mDialButtonContainer = fragmentView.findViewById(R.id.dialButtonContainer);
-        if (mDialButtonContainer != null) {
+        // If in portrait, add padding to the dial button since we need space for the
+        // search and menu/overflow buttons.
+        if (mDialButtonContainer != null && !ContactsUtils.isLandscape(this.getActivity())) {
             mDialButtonContainer.setPadding(
                     fakeMenuItemWidth, mDialButtonContainer.getPaddingTop(),
                     fakeMenuItemWidth, mDialButtonContainer.getPaddingBottom());
@@ -683,8 +685,10 @@ public class DialpadFragment extends Fragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        final boolean isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
-        if ((ViewConfiguration.get(getActivity()).hasPermanentMenuKey() || isLandscape) &&
+        // Landscape dialer uses the real actionbar menu, whereas portrait uses a fake one
+        // that is created using constructPopupMenu()
+        if (ContactsUtils.isLandscape(this.getActivity()) ||
+                ViewConfiguration.get(getActivity()).hasPermanentMenuKey() &&
                 isLayoutReady() && mDialpadChooser != null) {
             inflater.inflate(R.menu.dialpad_options, menu);
         }
@@ -692,11 +696,11 @@ public class DialpadFragment extends Fragment
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        final boolean isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         // Hardware menu key should be available and Views should already be ready.
-        if ((ViewConfiguration.get(getActivity()).hasPermanentMenuKey() || isLandscape) &&
+        if (ContactsUtils.isLandscape(this.getActivity()) ||
+                ViewConfiguration.get(getActivity()).hasPermanentMenuKey() &&
                 isLayoutReady() && mDialpadChooser != null) {
-             setupMenuItems(menu);
+            setupMenuItems(menu);
         }
     }
 
@@ -829,7 +833,7 @@ public class DialpadFragment extends Fragment
         if (length > 0) {
             T9SearchResult result = mT9Search.search(mDigits.getText().toString());
             if (mT9AdapterTop == null) {
-                mT9AdapterTop = mT9Search.createT9Adapter(new ArrayList<ContactItem>());
+                mT9AdapterTop = mT9Search.createT9Adapter(getActivity(), new ArrayList<ContactItem>());
                 mT9AdapterTop.setNotifyOnChange(true);
             } else {
                 mT9AdapterTop.clear();
@@ -837,7 +841,7 @@ public class DialpadFragment extends Fragment
 
             if (result != null) {
                 if (mT9Adapter == null) {
-                    mT9Adapter = mT9Search.createT9Adapter(result.getResults());
+                    mT9Adapter = mT9Search.createT9Adapter(getActivity(), result.getResults());
                     mT9Adapter.setNotifyOnChange(true);
                 } else {
                     mT9Adapter.clear();
